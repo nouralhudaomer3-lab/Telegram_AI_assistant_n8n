@@ -1,0 +1,387 @@
+{
+  "name": "Telegram Bot",
+  "nodes": [
+    {
+      "parameters": {
+        "chatId": "8318532600",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -512,
+        0
+      ],
+      "id": "3e7b5733-c006-46c1-ab4b-eaa18e3c2ec6",
+      "name": "Send a text message",
+      "webhookId": "5092a908-fde1-49cf-bff5-c47ca8cdc21c",
+      "credentials": {
+        "telegramApi": {
+          "id": "ZjK0lNQsnqwejDhv",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -1376,
+        16
+      ],
+      "id": "b4c56147-5a2b-43c5-a5ad-968d4fb13f29",
+      "name": "Telegram Trigger",
+      "webhookId": "96b5fba7-961f-4a69-a570-996d58661ceb",
+      "credentials": {
+        "telegramApi": {
+          "id": "qQDpcc3gjAKY0bLw",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Telegram Trigger').item.json.message }}",
+        "options": {
+          "systemMessage": "You are a friendly AI assistant on Telegram.\n\nRules:\n- Reply in the same language as the user.\n- Be clear and concise.\n- If you don't know something, use the search tool.\n- Remember previous messages using memory.\n- Format answers neatly.\n- Be polite and helpful.\nYou are a helpful AI assistant.\n\nUse the Tavily search tool ONLY when:\n- The user asks about recent news or current events.\n- The user asks for information that may have changed recently.\n- You are not confident in your own knowledge.\n\nDo NOT use Tavily for general knowledge, math, writing, translation, or programming questions."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -832,
+        16
+      ],
+      "id": "77a22b36-24ae-4dfa-b60d-9cb353a7bb13",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -864,
+        208
+      ],
+      "id": "96036cc4-8d6c-4de5-be94-0faf11f9afc5",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "y2x6RIwOSB6V4lBv",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Telegram Bot",
+        "height": 80,
+        "width": 150,
+        "color": "#196B27"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1520,
+        -432
+      ],
+      "typeVersion": 1,
+      "id": "0cd204bb-1e9d-4a97-badd-088f28372daa",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -736,
+        240
+      ],
+      "id": "bf4fcfac-dac0-41c7-b246-6ce75e07932a",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "query": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Query', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "@tavily/n8n-nodes-tavily.tavilyTool",
+      "typeVersion": 1,
+      "position": [
+        -576,
+        272
+      ],
+      "id": "8bbff15e-a4e1-47d5-80a8-d39fbfcb1441",
+      "name": "Search in Tavily",
+      "credentials": {
+        "tavilyApi": {
+          "id": "730rXVL7G1uEPKuG",
+          "name": "Tavily account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1hgd6tuvQxwBk-kaW-tQdGHbN0Vi7rpfMFJXooGIuuZk",
+          "mode": "list",
+          "cachedResultName": "customers ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1hgd6tuvQxwBk-kaW-tQdGHbN0Vi7rpfMFJXooGIuuZk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "الورقة1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1hgd6tuvQxwBk-kaW-tQdGHbN0Vi7rpfMFJXooGIuuZk/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $json.message.from.first_name }}",
+            "Chat_id": "={{ $json.message.chat.id }}",
+            "Date": "={{ $json.message.date }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Chat_id",
+              "displayName": "Chat_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -1136,
+        0
+      ],
+      "id": "18c116e3-5694-424e-9f4f-03e037111db7",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "dyjePDeZvpu8daEZ",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1hgd6tuvQxwBk-kaW-tQdGHbN0Vi7rpfMFJXooGIuuZk",
+          "mode": "list",
+          "cachedResultName": "customers ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1hgd6tuvQxwBk-kaW-tQdGHbN0Vi7rpfMFJXooGIuuZk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "الورقة1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1hgd6tuvQxwBk-kaW-tQdGHbN0Vi7rpfMFJXooGIuuZk/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $('Telegram Trigger').item.json.message.from.first_name }}",
+            "Chat_id": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+            "Date": "={{ $('Telegram Trigger').item.json.message.date }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Chat_id",
+              "displayName": "Chat_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -304,
+        0
+      ],
+      "id": "7e4e48d3-47a7-4fe2-b409-da3346e8b815",
+      "name": "Append row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "dyjePDeZvpu8daEZ",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search in Tavily": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "71ed8b9f-5f3a-4921-825d-cc09286b32c7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e89bd69fd2bef4d471af118fa6dd8c49cabc355b7d8c7348cfc1333d5b635504"
+  },
+  "nodeGroups": [],
+  "id": "0qqKrbldkpLnSXqk",
+  "tags": []
+}
